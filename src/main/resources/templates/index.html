@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Insert title here</title>
+<script src="https://code.jquery.com/jquery-3.3.1.js"
+  integrity="sha256-2Kok7MbOyxpgUVvAk/HJ2jigOSYS2auK4Pfzbm7uH60="
+  crossorigin="anonymous"></script>
+</head>
+<body>
+	<div>
+		<p>Please input the stock's name:<p/>
+		<form id="search">
+			<input id="stockname" type="text"/>
+			<button id="submit" type="submit">search</button>
+		</form>
+		<div id="result"></div>
+	</div>
+</body>
+<script>
+
+$(document).ready(function(){
+	$("#search").submit(function(event){
+        event.preventDefault(); //让submit的返回结果在页面上保持住
+		var value = {"stockname": $("#stockname").val()};
+		$.ajax({
+			type:"POST",
+			contentType:"application/json",
+			url:"/stock",
+			data:JSON.stringify(value), 
+			dataType:'json',
+			/* cache: false, */
+			success: function(result){
+    				console.log("success is "+result);
+				getResult(result);				
+			},
+			error: function(e){
+    				console.log("error is "+e);
+     			console.log("stop here.");
+ 			}
+		});
+	});
+}); 
+
+function getResult(prices){
+    var html ='';
+    $("#result").html(html);
+	if(prices!=null){
+        for(i in prices){
+        		html += '<p>';
+            html += prices[i];
+            html += '</p>';
+            console.log(prices[i]);
+        }
+        $("#result").html(html);
+    }else{
+        $("#result").html('');
+     }  
+}
+
+</script>
+</html>
